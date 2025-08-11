@@ -18,25 +18,20 @@ spec:
             raft:
               enabled: true
               setNodeId: true
-              config: |
-                storage "raft" {
-                  path    = "/vault/data"
-                  retry_join {
-                    leader_api_addr = "http://vault-0.vault-internal:8200"
-                  }
-                  retry_join {
-                    leader_api_addr = "http://vault-1.vault-internal:8200"
-                  }
-                  retry_join {
-                    leader_api_addr = "http://vault-2.vault-internal:8200"
-                  }
-                }
-                listener "tcp" {
-                  address     = "[::]:8200"
-                  cluster_address = "[::]:8201"
-                  tls_disable = "true"
-                }
-                ui = true
+          listener:
+            tcp:
+              address: "[::]:8200"
+              clusterAddress: "[::]:8201"
+              tlsDisable: true
+          storage:
+            raft:
+              path: "/vault/data"
+              retryJoin:
+                - leaderApiAddr: "http://vault-0.vault-internal:8200"
+                - leaderApiAddr: "http://vault-1.vault-internal:8200"
+                - leaderApiAddr: "http://vault-2.vault-internal:8200"
+          ui:
+            enabled: true
           dataStorage:
             enabled: true
             size: 2Gi
@@ -50,8 +45,10 @@ spec:
           extraVolumeMounts:
             - name: vault-logs
               mountPath: /vault/logs
+
         injector:
           enabled: true
+
         ui:
           enabled: true
   destination:
@@ -59,20 +56,8 @@ spec:
     namespace: vault
   syncPolicy:
     automated:
-      selfHeal: true
       prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: vault-logs-pvc
-  namespace: vault
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: vault-storage
+      - ServerSideApply=true
