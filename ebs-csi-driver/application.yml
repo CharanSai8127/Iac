@@ -8,7 +8,15 @@ spec:
   source:
     repoURL: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     chart: aws-ebs-csi-driver
-    targetRevision: 2.30.0
+    targetRevision: 2.31.0 # or latest
+    helm:
+      values: |
+        controller:
+          serviceAccount:
+            create: false
+            name: ebs-csi-controller-sa
+        enableVolumeResizing: true
+        enableVolumeSnapshot: true
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
@@ -16,6 +24,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-
