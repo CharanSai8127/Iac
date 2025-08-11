@@ -46,7 +46,7 @@ spec:
           extraVolumes:
             - name: vault-logs
               persistentVolumeClaim:
-                claimName: vault-logs-pvc
+                claimName: "vault-logs-pvc"
           extraVolumeMounts:
             - name: vault-logs
               mountPath: /vault/logs
@@ -62,7 +62,7 @@ spec:
       selfHeal: true
       prune: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
