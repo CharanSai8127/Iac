@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-gateway
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nginxinc/nginx-gateway-fabric
+    targetRevision: main
+    path: deploy/helm-chart
+    helm:
+      values: |
+        controller:
+          service:
+            type: LoadBalancer
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nginx-gateway
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
