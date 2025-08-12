@@ -1,4 +1,0 @@
-replicaCount: 1
-image:
-  repository: vault
-  tag: "1.10.0"
