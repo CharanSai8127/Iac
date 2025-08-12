@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: vault
 spec:
-  replicas: {{ default .Values.replicaCount .Values.server.ha.replicas }}
+  replicas: {{ .Values.server.ha.replicas | default 1 }}
   selector:
     matchLabels:
       app: vault
@@ -17,4 +17,6 @@ spec:
         - name: vault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: 8200
+            - name: http
+              containerPort: 8200
+              protocol: TCP
