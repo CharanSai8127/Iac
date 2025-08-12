@@ -11,7 +11,7 @@ spec:
     targetRevision: main
     helm:
       valueFiles:
-        - vaul-values.yml
+        - vault-values.yml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: vault
@@ -21,3 +21,4 @@ spec:
       selfHeal: true
     syncOptions:
       - ServerSideApply=true
+
