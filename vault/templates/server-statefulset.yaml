@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: vault
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ default .Values.replicaCount .Values.server.ha.replicas }}
   selector:
     matchLabels:
       app: vault
