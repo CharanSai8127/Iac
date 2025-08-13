@@ -6,57 +6,60 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/Charansai8127/Iac'
-    path: vault
-    targetRevision: main
+    repoURL: https://helm.releases.hashicorp.com
+    chart: vault
+    targetRevision: 0.30.1   # Vault Helm chart release (Jul 28, 2025)
     helm:
       values: |
-        image:
-          repository: hashicorp/vault
-          tag: "1.10.0"
+        global:
+          enabled: true
+          tlsDisable: true   # disables TLS end-to-end for initial setup
+
+        injector:
+          enabled: true
+
         server:
           ha:
             enabled: true
-            replicas: 3
-          raft:
-            enabled: true
-            setNodeId: true
+            replicas: 2        # set to 3 after you have 3+ nodes
+            raft:
+              enabled: true
+              setNodeId: true
+              # When ha.raft.enabled=true, this config block is used
+              config: |
+                ui = true
+                cluster_name = "vault-integrated-storage"
+
+                listener "tcp" {
+                  address         = "0.0.0.0:8200"
+                  cluster_address = "0.0.0.0:8201"
+                  tls_disable     = true
+                }
+
+                storage "raft" {
+                  path = "/vault/data"
+                  retry_join { leader_api_addr = "http://vault-0.vault-internal:8200" }
+                  retry_join { leader_api_addr = "http://vault-1.vault-internal:8200" }
+                  retry_join { leader_api_addr = "http://vault-2.vault-internal:8200" }
+                }
+
           dataStorage:
             enabled: true
             size: 2Gi
             storageClass: vault-storage
-            accessMode: ReadWriteOnce
-            mountPath: /vault/data
+
           service:
             enabled: true
             type: LoadBalancer
             port: 8200
-          config: |
-            ui = true
-            cluster_name = "vault-integrated-storage"
 
-            listener "tcp" {
-              address = "[::]:8200"
-              cluster_address = "[::]:8201"
-              tls_disable = false
-              tls_cert_file = "/vault/tls/server.crt"
-              tls_key_file = "/vault/tls/server.key"
-            }
-
-            storage "raft" {
-              path = "/vault/data"
-              retry_join { leader_api_addr = "http://vault-0.vault-internal:8200" }
-              retry_join { leader_api_addr = "http://vault-1.vault-internal:8200" }
-              retry_join { leader_api_addr = "http://vault-2.vault-internal:8200" }
-            }
-        injector:
-          enabled: true
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: vault
   syncPolicy:
     automated:
-      prune: false
+      prune: true
       selfHeal: true
     syncOptions:
+      - CreateNamespace=true
       - ServerSideApply=true
