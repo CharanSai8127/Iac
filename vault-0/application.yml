@@ -25,6 +25,12 @@ spec:
             enabled: true
             size: 2Gi
             storageClass: vault-storage
+            accessMode: ReadWriteOnce
+            mountPath: /vault/data
+          service:
+            enabled: true
+            type: LoadBalancer
+            port: 8200
           config: |
             ui = true
             cluster_name = "vault-integrated-storage"
