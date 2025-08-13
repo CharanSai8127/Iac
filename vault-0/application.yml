@@ -11,6 +11,9 @@ spec:
     targetRevision: main
     helm:
       values: |
+        image: 
+          repository: hashicorp/vault
+          tag: "1.0.0"
         server:
           ha:
             enabled: true
