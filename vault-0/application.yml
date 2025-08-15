@@ -21,7 +21,7 @@ spec:
         server:
           ha:
             enabled: true
-            replicas: 2        # set to 3 after you have 3+ nodes
+            replicas: 3        # set to 3 after you have 3+ nodes
             raft:
               enabled: true
               setNodeId: true
