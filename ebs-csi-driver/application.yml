@@ -11,9 +11,14 @@ spec:
     targetRevision: 2.30.0
     helm:
       values: |-
-        serviceAccount:
-          name: ebs-csi-controller-sa
-          create: false
+        controller:
+          serviceAccount:
+            create: false
+            name: ebs-csi-controller
+        node:
+          serviceAccount:
+            # Use the default SA created by the chart
+            create: true
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
