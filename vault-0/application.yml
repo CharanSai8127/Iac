@@ -13,7 +13,7 @@ spec:
       values: |
         global:
           enabled: true
-          tlsDisable: true  # Set to false with certs for production
+          tlsDisable: true  # Disable TLS for now; enable for production
         injector:
           enabled: true
         server:
@@ -37,32 +37,12 @@ spec:
                   retry_join { leader_api_addr = "http://vault-1.vault-internal:8200" }
                   retry_join { leader_api_addr = "http://vault-2.vault-internal:8200" }
                 }
-                service_registration "kubernetes" {
-                  namespace = "vault"
-                  pod_name  = "vault-$(HOSTNAME)"
-                }
           service:
-            # Disable default service, using activeService/standbyService only
             enabled: false
-          activeService:
-            enabled: true
-            type: LoadBalancer
-            port: 8200
-            annotations:
-              service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-          standbyService:
-            enabled: true
-            type: LoadBalancer
-            port: 8200
-            annotations:
-              service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
           dataStorage:
             enabled: true
             size: 2Gi
             storageClass: vault-storage
-          serviceAccount:
-            create: false
-            name: vault
   destination:
     server: https://kubernetes.default.svc
     namespace: vault
