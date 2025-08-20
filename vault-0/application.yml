@@ -8,12 +8,12 @@ spec:
   source:
     repoURL: https://helm.releases.hashicorp.com
     chart: vault
-    targetRevision: 0.30.1   # Vault Helm chart release (Jul 28, 2025)
+    targetRevision: 0.30.1   # Vault Helm chart release
     helm:
       values: |
         global:
           enabled: true
-          tlsDisable: true   # disables TLS end-to-end for initial setup
+          tlsDisable: true   # disable TLS for initial setup; enable later if needed
 
         injector:
           enabled: true
@@ -21,11 +21,10 @@ spec:
         server:
           ha:
             enabled: true
-            replicas: 3        # set to 3 after you have 3+ nodes
+            replicas: 3
             raft:
               enabled: true
               setNodeId: true
-              # When ha.raft.enabled=true, this config block is used
               config: |
                 ui = true
                 cluster_name = "vault-integrated-storage"
@@ -48,10 +47,14 @@ spec:
             size: 2Gi
             storageClass: vault-storage
 
-          service:
-            enabled: true
-            type: LoadBalancer
-            port: 8200
+          # Expose only the active node as a LoadBalancer
+          ha:
+            activeService:
+              enabled: true
+              type: LoadBalancer
+              annotations:
+                service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+              port: 8200
 
   destination:
     server: https://kubernetes.default.svc
