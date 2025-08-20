@@ -8,12 +8,12 @@ spec:
   source:
     repoURL: https://helm.releases.hashicorp.com
     chart: vault
-    targetRevision: 0.30.1   # Vault Helm chart release
+    targetRevision: 0.30.1
     helm:
       values: |
         global:
           enabled: true
-          tlsDisable: true   # disable TLS for initial setup
+          tlsDisable: true
 
         injector:
           enabled: true
@@ -42,7 +42,6 @@ spec:
                   retry_join { leader_api_addr = "http://vault-2.vault-internal:8200" }
                 }
 
-            # LoadBalancer for active pod
             activeService:
               enabled: true
               type: LoadBalancer
@@ -50,7 +49,6 @@ spec:
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
 
-            # LoadBalancer for standby pods
             standbyService:
               enabled: true
               type: LoadBalancer
