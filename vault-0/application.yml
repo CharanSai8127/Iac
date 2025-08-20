@@ -8,41 +8,51 @@ spec:
   source:
     repoURL: https://helm.releases.hashicorp.com
     chart: vault
-    targetRevision: 0.30.1
+    targetRevision: 0.30.1   # Vault Helm chart release (Jul 28, 2025)
     helm:
       values: |
         global:
           enabled: true
-          tlsDisable: true  # Disable TLS for now; enable for production
+          tlsDisable: true   # disables TLS end-to-end for initial setup
+
         injector:
           enabled: true
+
         server:
           ha:
             enabled: true
-            replicas: 3
+            replicas: 3        # set to 3 after you have 3+ nodes
             raft:
               enabled: true
               setNodeId: true
+              # When ha.raft.enabled=true, this config block is used
               config: |
                 ui = true
                 cluster_name = "vault-integrated-storage"
+
                 listener "tcp" {
                   address         = "0.0.0.0:8200"
                   cluster_address = "0.0.0.0:8201"
                   tls_disable     = true
                 }
+
                 storage "raft" {
                   path = "/vault/data"
                   retry_join { leader_api_addr = "http://vault-0.vault-internal:8200" }
                   retry_join { leader_api_addr = "http://vault-1.vault-internal:8200" }
                   retry_join { leader_api_addr = "http://vault-2.vault-internal:8200" }
                 }
-          service:
-            enabled: false
+
           dataStorage:
             enabled: true
             size: 2Gi
             storageClass: vault-storage
+
+          service:
+            enabled: true
+            type: LoadBalancer
+            port: 8200
+
   destination:
     server: https://kubernetes.default.svc
     namespace: vault
