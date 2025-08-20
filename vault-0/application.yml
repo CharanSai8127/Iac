@@ -42,19 +42,17 @@ spec:
                   retry_join { leader_api_addr = "http://vault-2.vault-internal:8200" }
                 }
 
-          dataStorage:
-            enabled: true
-            size: 2Gi
-            storageClass: vault-storage
-
-          # Expose only the active node as a LoadBalancer
-          ha:
             activeService:
               enabled: true
               type: LoadBalancer
               annotations:
                 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
               port: 8200
+
+          dataStorage:
+            enabled: true
+            size: 2Gi
+            storageClass: vault-storage
 
   destination:
     server: https://kubernetes.default.svc
