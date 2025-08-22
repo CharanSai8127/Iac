@@ -45,8 +45,13 @@ spec:
                 # AWS KMS Auto-Unseal
                 seal "awskms" {
                   region     = "ap-south-1"
-                  kms_key_id = "<YOUR_KMS_KEY_ARN>"
+                  kms_key_id = "arn:aws:kms:ap-south-1:484907487964:key/3d5001f4-f317-48a3-86cc-6de106635177"
                 }
+
+          # use the IRSA-linked ServiceAccount
+          serviceAccount:
+            create: false
+            name: vault-kms
 
           dataStorage:
             enabled: true
@@ -57,14 +62,6 @@ spec:
             enabled: true
             type: LoadBalancer
             port: 8200
-
-          extraSecretEnvironmentVars:
-            - envName: AWS_ACCESS_KEY_ID
-              secretName: vault-kms-creds
-              secretKey: AWS_ACCESS_KEY_ID
-            - envName: AWS_SECRET_ACCESS_KEY
-              secretName: vault-kms-creds
-              secretKey: AWS_SECRET_ACCESS_KEY
 
   destination:
     server: https://kubernetes.default.svc
