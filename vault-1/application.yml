@@ -59,10 +59,8 @@ spec:
             port: 8200
 
           serviceAccount:
-            create: true
-            name: vault-kms
-            annotations:
-              eks.amazonaws.com/role-arn: arn:aws:iam::484907487964:role/vault-kms-role
+            create: false   # use the pre-created SA
+            name: vault-kms # bound to IRSA role vault-kms-role
 
   destination:
     server: https://kubernetes.default.svc
