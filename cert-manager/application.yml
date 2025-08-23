@@ -11,11 +11,14 @@ spec:
     targetRevision: v1.14.3
     helm:
       values: |
-        installCRDs: false
+        installCRDs: true
+        # Optional: configure leader election namespace, webhook settings, etc.
+        # webhook:
+        #   failurePolicy: Ignore
   destination:
     server: https://kubernetes.default.svc
     namespace: nginx-gateway
   syncPolicy:
     automated:
-      prune: false
       selfHeal: true
+      prune: false
