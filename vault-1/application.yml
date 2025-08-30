@@ -45,7 +45,7 @@ spec:
                 # AWS KMS Auto-Unseal
                 seal "awskms" {
                   region     = "ap-south-1"
-                  kms_key_id = "arn:aws:kms:ap-south-1:484907487964:key/e73198e6-2d92-48ba-a82b-c3ab4576bf66"
+                  kms_key_id = "arn:aws:kms:ap-south-1:484907487964:key/e0f2da7b-e96e-4749-b3ac-ecc60db13ec3"
                 }
 
           dataStorage:
