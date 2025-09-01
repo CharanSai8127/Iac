@@ -45,12 +45,12 @@ spec:
                 # AWS KMS Auto-Unseal
                 seal "awskms" {
                   region     = "ap-south-1"
-                  kms_key_id = "arn:aws:kms:ap-south-1:484907487964:key/e0f2da7b-e96e-4749-b3ac-ecc60db13ec3"
+                  kms_key_id = "arn:aws:kms:ap-south-1:484907487964:key/9e844f0e-b87c-406a-8414-8dd7c4222828"
                 }
 
           dataStorage:
             enabled: true
-            size: 2Gi
+            size: 1Gi
             storageClass: vault-storage
 
           service:
